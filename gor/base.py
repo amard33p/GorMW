@@ -6,6 +6,7 @@ import gzip
 import binascii
 import datetime
 import traceback
+
 from urllib.parse import quote_plus, urlparse, parse_qs
 from typing import Dict
 
@@ -211,12 +212,12 @@ class Gor(object):
         else:
             return payload[:payload.index(b'\r\n\r\n')+4] + new_body
 
-    def http_cookie(self, payload: bytes, name: str) -> str:
-        cookie_data = self.http_header(payload, 'Cookie')
+    def http_cookie(self, payload: bytes, name: str, header_name: str='Cookie') -> str:
+        cookie_data = self.http_header(payload, header_name)
         cookies = cookie_data.get('value') or ''
         for item in cookies.split('; '):
             if item.startswith(name + '='):
-                return item[item.index('=')+1:]
+                return item[item.index('=') + 1:]
         return None
 
     def set_http_cookie(self, payload: bytes, name: str, value: str) -> bytes:
